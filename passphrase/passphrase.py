@@ -25,7 +25,7 @@ for word in wordlistFile:
 wordlistFile.close()
 
 totalwords = len(worddict)
-print "" 			# for padding
+print ""			# for padding
 
 for x in range(options.passlen):
 	rando = random.random()
