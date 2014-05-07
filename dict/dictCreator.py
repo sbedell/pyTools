@@ -32,6 +32,10 @@ else:
 	#wordlist = response.replace('.', ' ').replace(':', ' ').replace('?', '').split(' ')
 	wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').split(' ')
 
+"""
 with open('testDict', 'a') as f:
 	for word in set(wordlist):
 		f.write(str(word.strip()) + '\n')
+"""
+for word in set(wordlist):
+

@@ -4,7 +4,7 @@ import re, optparse, sys, random
 
 parser = optparse.OptionParser('python passphrase.py <options>')
 parser.add_option('-l', dest='passlen', type='int', help='Specify length of passphrase. Optional, default is 4.', default=4)
-parser.add_option('-f', dest='file', type='string', help='Specify wordlist file to use. Optional, default is american.0', default='american.0')
+parser.add_option('-f', dest='file', type='string', help='Specify wordlist file to use. Optional, default is american.0', default='../wordlists/american.0')
 
 (options, args) = parser.parse_args()
 
