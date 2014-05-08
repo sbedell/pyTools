@@ -27,15 +27,13 @@ if not options.url:
 	print parser.print_usage()
 	sys.exit(-1)
 else:
-	# probably need to regex verify a correct URL
-	response = getResponse(options.url)
-	#wordlist = response.replace('.', ' ').replace(':', ' ').replace('?', '').split(' ')
-	wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').split(' ')
-
+    # probably need to regex verify a correct URL
+    response = getResponse(options.url)
+    wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').split(' ')
+    for word in set(wordlist):
+        print word
 """
 with open('testDict', 'a') as f:
 	for word in set(wordlist):
 		f.write(str(word.strip()) + '\n')
 """
-for word in set(wordlist):
-    print word
