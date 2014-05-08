@@ -38,4 +38,4 @@ with open('testDict', 'a') as f:
 		f.write(str(word.strip()) + '\n')
 """
 for word in set(wordlist):
-
+    print word
