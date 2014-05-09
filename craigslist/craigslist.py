@@ -1,12 +1,11 @@
 #!/usr/bin/python
 
-import urllib2, sys, optparse
-import re, string
+import urllib2, sys, optparse, re, string
 from bs4 import BeautifulSoup
 
 """
 TODOS:
-0. Fix the douplicate link results thing
+0. Fix the duplicate link results thing
 1. implement all city and multi-city searching
 2. add category selection, for now it's searching through "all for sale"
 3. implement state and all states
@@ -25,7 +24,7 @@ def getResponse(url):
 	return response
 
 #******************************************************
-# Create the option parser. ##3
+# Create the option parser.
 # OptionParser( sample usage text)
 parser = optparse.OptionParser('python craigslist.py -t searchterms <options>')
 
@@ -38,8 +37,8 @@ parser.add_option('-m', dest='maxprice', type='int', help='Specify max price. Op
 parser.add_option('-n', dest='minprice', type='int', help='Specify min price. Optional.')
 parser.add_option('-r', dest='numresults', type='int', help='Set max amount of results. Optional.')
 parser.add_option('-o', dest='outputType', type='string', help='Set the output type: terminal or html. Optional. Default is print to console.')
-parser.add_option('-p', dest='pic', action='store_true', help='Flag this if you want pics required. Default is false.', default=False)
-parser.add_option('-v', dest='verbose', action='store_true', help='Set verbose output. Default is verbose turned on.', default=True)
+parser.add_option('-p', dest='pic', action='store_true', help='Flag this if you want pics required. Default is false.', default = False)
+parser.add_option('-v', dest='verbose', action='store_true', help='Set verbose output. Default is verbose turned on.', default = True)
 parser.add_option('-q', dest='verbose', action='store_false', help='Set quiet output.')
 
 (options, args) = parser.parse_args()
@@ -47,10 +46,11 @@ parser.add_option('-q', dest='verbose', action='store_false', help='Set quiet ou
 # *******************************************************************
 # Main Program is starting here: 
 if options.verbose:
+    # print all excess/non parsed arguments
 	for arg in args:
 		print "Arg = " + arg
 
-# you should be beautifulsouping this
+# Pull a list of cities, should be slurping this with bsoup
 ohioCities = ['akroncanton', 'ashtabula', 'athens', 'chillicothe', 'cincinnati', 'cleveland', 'columbus', 'dayton', 'limaohio', 'mansfield', 'sandusky', 'toledo', 'tuscarawas', 'youngstown', 'zanesville']
 
 if options.searchterm == None:
