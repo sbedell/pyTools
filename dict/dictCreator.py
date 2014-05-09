@@ -33,12 +33,10 @@ elif options.url:
     for word in set(wordlist):
         print word
 elif options.inFileName:
-    #wordlist = []
     with open(options.inFileName, 'r') as f:
     	for line in f:
             splitLine = line.replace(',', ' ').replace('.', ' ').strip().split()
             for word in set(splitLine):                
-                #wordlist.append(word)
                 print word
 else:
     print "Error"
