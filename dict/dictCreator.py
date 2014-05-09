@@ -7,8 +7,7 @@ import urllib2, sys, optparse, re, string
 # bot requets from urllib usually
 def getResponse(url):
     opener = urllib2.build_opener()
-    opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11')]
-
+    opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.8.1.11) Gecko/20121207 Firefox/3.5.16')]
     try:
         response = opener.open(url).read()
     except:
@@ -19,21 +18,28 @@ def getResponse(url):
 # Get command line args:
 parser = optparse.OptionParser('python dictcreator.py <options>')
 parser.add_option('-u', metavar='URL', help = 'URL to make dictionary from', dest='url')
-parser.add_option('-f', metavar='file', help = 'filename to write to', dest='filename')
+parser.add_option('-r', metavar='infile', help = 'Name of a file to read-in', dest='inFileName')
 
 options, args = parser.parse_args()
 
-if not options.url:
+# No arguments were given:
+if not options.url and not options.inFileName:
 	print parser.print_usage()
 	sys.exit(-1)
-else:
+elif options.url:
     # probably need to regex verify a correct URL
     response = getResponse(options.url)
-    wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').split(' ')
+    wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').strip().split()
     for word in set(wordlist):
         print word
-"""
-with open('testDict', 'a') as f:
-	for word in set(wordlist):
-		f.write(str(word.strip()) + '\n')
-"""
+elif options.inFileName:
+    #wordlist = []
+    with open(options.inFileName, 'r') as f:
+    	for line in f:
+            splitLine = line.replace(',', ' ').replace('.', ' ').strip().split()
+            for word in set(splitLine):                
+                #wordlist.append(word)
+                print word
+else:
+    print "Error"
+    sys.exit(-1)
