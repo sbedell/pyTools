@@ -34,15 +34,15 @@ parser = optparse.OptionParser('python craigslist.py -t searchterms <options>')
 # (option flag, variable destination, [action to take], type of the variable, help text)
 parser.add_option('-c', dest='city', type='string', help='Specify city to search in. Comma separated. Optional - Default is Columbus. Type \'all\' to search through all cities of the selected state.', default='columbus')
 parser.add_option('-s', dest='state', type='string', help='Specify what state to search in. Optional - Default is Ohio. Type \'all\' to search through all states [not recommended, slow]', default='ohio')
-# parser.add_option('-a', dest='category', type='string', help='Specify which category to search within. Optional - Default is all categories', default='sss'
 parser.add_option('-t', dest='searchterm', type='string', help='Type search terms here, comma separated. Required.')
 parser.add_option('-m', dest='maxprice', type='int', help='Specify max price. Optional.')
 parser.add_option('-n', dest='minprice', type='int', help='Specify min price. Optional.')
+parser.add_option('-p', dest='pic', action='store_true', help='Flag this if you want pics required. Default is false.', default = False)
+parser.add_option('-v', dest='verbose', action='store_true', help='Set verbose output. Default is quiet output.', default = False)
+# parser.add_option('-a', dest='category', type='string', help='Specify which category to search within. Optional - Default is all categories', default='sss'
+#parser.add_option('-u', dest='userAgent', type='string', help='Input a custom User-Agnent string.')
 #parser.add_option('-r', dest='numresults', type='int', help='Set max amount of results. Optional.')
 #parser.add_option('-o', dest='outputType', type='string', help='Set the output type: terminal or html. Optional. Default is print to console.')
-parser.add_option('-p', dest='pic', action='store_true', help='Flag this if you want pics required. Default is false.', default = False)
-parser.add_option('-u', dest='userAgent', type='string', help='Input a custom User-Agnent string.')
-parser.add_option('-v', dest='verbose', action='store_true', help='Set verbose output. Default is quiet output.', default = False)
 
 (options, args) = parser.parse_args()
 
