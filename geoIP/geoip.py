@@ -28,7 +28,6 @@ parser.add_option('-q', dest='verbose', action='store_false', help='Set quiet ou
 # Setting global variables: 
 ipAddrFile = options.ipFile
 ipAddr = options.ipaddr
-Verbose = options.verbose
 outputFormat = options.outType
 
 # Prints help and exits if no inputs are supplied
@@ -37,9 +36,9 @@ if (ipAddrFile == None and ipAddr == None):
 	print "Type in \'python geoIP.py -h\' for help"
 	sys.exit(-1)
  
-if Verbose: print "\nProcessing starting...\n"
+if options.verbose: print "\nProcessing starting...\n"
 
-if ipAddrFile != None:
+if ipAddrFile:
 	try:
 		ipInFile = open(ipAddrFile, 'r')
 	except IOError as e:
@@ -47,15 +46,13 @@ if ipAddrFile != None:
 		sys.exit(-1)
 	for ip in ipInFile:
 		# building the url:
-		url = 'http://freegeoip.net/' + outputFormat + '/' + ip.strip()
-		response = getResponse(url)
-		geoloc = response.strip()
-		print geoloc
-elif ipAddr != None:
-	url = 'http://freegeoip.net/' + outputFormat + '/' + ipAddr.strip()
+		url = 'http://freegeoip.net/' + str(outputFormat).strip() + '/' + ip.strip()
+		geoloc = getResponse(url)
+		print geoloc.strip()
+	ipInFile.close()
+if ipAddr:
+	url = 'http://freegeoip.net/' + str(outputFormat).strip() + '/' + ipAddr.strip()
 	geoloc = getResponse(url)
-	print geoloc
-else:
-	print "I think this is an error..."
+	print geoloc.strip()
 
-if Verbose: print '\nProcessing Complete.\n'
+if options.verbose: print '\nProcessing Complete.\n'
