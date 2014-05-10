@@ -26,10 +26,13 @@ options, args = parser.parse_args()
 if not options.url and not options.inFileName:
 	print parser.print_usage()
 	sys.exit(-1)
+elif options.url and options.inFileName:
+    print "\nError - can only generate a dictionary from a URL or a file, not both.\nIf you really need to do this, run this program once with the url, and redirect it to a file ('>' on the command line), then re-run this program with your infile and append it to the file you JUST created (using '>>')\n"
+    sys.exit(-1)
 elif options.url:
     # probably need to regex verify a correct URL
     response = getResponse(options.url)
-    wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').strip().split()
+    wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').replace('.', ' ').strip().split()
     for word in set(wordlist):
         print word
 elif options.inFileName:

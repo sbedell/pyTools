@@ -22,11 +22,13 @@ Looks up IP addresses or entire files of IP addresses and geolocates them.
 passphrase
 ------
 A simple passphrase generator based on given wordlists.
+
 More information on passphrases: [xkcd.com/936](http://www.xkcd.com/936/)
 
 wordscramble
 ------
 Stcineitss say ppeloe can raed snenteces lkie tihs as lnog as the fsirt and lsat leertts are in the rhgit palce.
+
 This script takes a wordlist or sentence and outputs it scrambled like the previous sentence.
 
 wordlists
