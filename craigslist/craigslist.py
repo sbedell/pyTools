@@ -18,8 +18,10 @@ TODOS:
 # web API to get the geolocation data.
 def getResponse(url, userAgent = None):
     opener = urllib2.build_opener()
-    userAgent = 'User-agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.8.1.11) Gecko/20121207 Firefox/3.5.16'
-    opener.addheaders = [(userAgent)]
+    if not userAgent:
+        uAgent = 'User-agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.8.1.11) Gecko/20121207 Firefox/3.5.16'
+    else: uAgent = userAgent
+    opener.addheaders = [(uAgent)]
     try:
         response = opener.open(url).read()
     except:
@@ -32,9 +34,8 @@ def getResponse(url, userAgent = None):
 parser = optparse.OptionParser('python craigslist.py -t searchterms <options>')
 
 # (option flag, variable destination, [action to take], type of the variable, help text)
-parser.add_option('-c', dest='city', type='string', help='Specify city to search in. Comma separated. Optional - Default is Columbus. Type \'all\' to search through all cities of the selected state.', default='columbus')
-parser.add_option('-s', dest='state', type='string', help='Specify what state to search in. Optional - Default is Ohio. Type \'all\' to search through all states [not recommended, slow]', default='ohio')
-parser.add_option('-t', dest='searchterm', type='string', help='Type search terms here, comma separated. Required.')
+parser.add_option('-c', dest='city', type='string', help='Specify city (or cities) to search in. Comma separated! Optional - Default is Columbus. Type \'all\' to search through all cities.', default='columbus')
+parser.add_option('-s', dest='searchterm', type='string', help='Type search terms here, comma separated. Required.')
 parser.add_option('-m', dest='maxprice', type='int', help='Specify max price. Optional.')
 parser.add_option('-n', dest='minprice', type='int', help='Specify min price. Optional.')
 parser.add_option('-p', dest='pic', action='store_true', help='Flag this if you want pics required. Default is false.', default = False)
@@ -62,11 +63,7 @@ if options.searchterm == None:
 	sys.exit(-1)
 
 if options.city == 'all':
-	print "TODO"
-
-if options.state == 'all':
-    print "TODO"
-    # scrape the page of all the city names and shit
+	print "This is not implemented yet."
 
 # building the url: http://city.craigslist.org/search/category
 # ex: http://columbus.craigslist.org/search/sss?zoomToPosting=&catAbb=sss&query=testingtesting&minAsk=&maxAsk=&hasPic=1
@@ -108,8 +105,6 @@ for link in soup.find_all('a'):
     # skips blank href, blank link text, any links beginning with dollar signs, and any links not ending in .html
     if not link.get('href') or not link.get_text() or (re.search("^\$", link.get_text())) or (not re.search(".html", link.get('href'))):
         continue
-    if re.search("top", link.get_text()):
-        break       # Found the end of results - breaking out
     print '\n' + link.get_text()
     print "http://" + options.city + ".craigslist.org" + link.get('href')
 print "\n"
