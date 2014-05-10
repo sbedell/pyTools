@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 
 """
 TODOS:
-0. Fix the duplicate link results thing
 1. implement all city and multi-city searching
 2. add category selection, for now it's searching through "all for sale"
 3. implement state and all states
@@ -17,13 +16,16 @@ TODOS:
 # *********** Subprocedures ***********************
 # Uses urllib2 to request a call to the
 # web API to get the geolocation data.
-def getResponse(url):
-	try:
-		response = urllib2.urlopen(url).read()
-	except:
-		print "Unexpected HTTP Error"
-		sys.exit(-1)
-	return response
+def getResponse(url, userAgent = None):
+    opener = urllib2.build_opener()
+    userAgent = 'User-agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en; rv:1.8.1.11) Gecko/20121207 Firefox/3.5.16'
+    opener.addheaders = [(userAgent)]
+    try:
+        response = opener.open(url).read()
+    except:
+        print "Unexpected HTTP Error"
+        sys.exit(-1)
+    return response
 
 # ******************************************************
 # Create the option parser. OptionParser( sample usage text)
@@ -32,13 +34,14 @@ parser = optparse.OptionParser('python craigslist.py -t searchterms <options>')
 # (option flag, variable destination, [action to take], type of the variable, help text)
 parser.add_option('-c', dest='city', type='string', help='Specify city to search in. Comma separated. Optional - Default is Columbus. Type \'all\' to search through all cities of the selected state.', default='columbus')
 parser.add_option('-s', dest='state', type='string', help='Specify what state to search in. Optional - Default is Ohio. Type \'all\' to search through all states [not recommended, slow]', default='ohio')
-#parser.add_option('-a', dest='category', type='string', help='Specify which category to search within. Optional - Default is all categories', default='sss'
+# parser.add_option('-a', dest='category', type='string', help='Specify which category to search within. Optional - Default is all categories', default='sss'
 parser.add_option('-t', dest='searchterm', type='string', help='Type search terms here, comma separated. Required.')
 parser.add_option('-m', dest='maxprice', type='int', help='Specify max price. Optional.')
 parser.add_option('-n', dest='minprice', type='int', help='Specify min price. Optional.')
 #parser.add_option('-r', dest='numresults', type='int', help='Set max amount of results. Optional.')
 #parser.add_option('-o', dest='outputType', type='string', help='Set the output type: terminal or html. Optional. Default is print to console.')
 parser.add_option('-p', dest='pic', action='store_true', help='Flag this if you want pics required. Default is false.', default = False)
+parser.add_option('-u', dest='userAgent', type='string', help='Input a custom User-Agnent string.')
 parser.add_option('-v', dest='verbose', action='store_true', help='Set verbose output. Default is quiet output.', default = False)
 
 (options, args) = parser.parse_args()
@@ -96,30 +99,22 @@ soup = BeautifulSoup(craigsResponse) # Creating a Beautifulsoup object
 # print soup.prettify()  			 # Pretty Printing the output HTML
 
 # Pulling All Links
-"""
-links = [link.get('href') for link in soup.find_all('a')]
-print set(links)
-for link in set(links):
-    if not re.search("/\w+/\d+.html", link.get('href')):
-        continue	# Skipping shit links    
-"""
+# links = [link for link in soup.find_all('a')]
 
-"""
-TODO SOMETHING IS BROKEN HERE
-File "craigslist.py", line 108, in <module>
-    if not re.search("/\w+/\d+.html", link.get('href')):
-  File "/usr/lib/python2.6/re.py", line 142, in search
-    return _compile(pattern, flags).search(string)
-TypeError: expected string or buffer
-"""
 for link in soup.find_all('a'):
-    #if not re.search("/\w+/\d+.html", link.get('href')):
-    #    continue	# Skipping shit links
-	print "\n" + link.get_text()
-	print "http://" + options.city + ".craigslist.org" + link.get('href')
+    #print type(link), link                          # type = bs4.element.Tag
+    #print type(link.get('href')), link.get('href')  # type = unicode
+    #print type(link.get_text()), link.get_text()    # type = unicode
+    # skips blank href, blank link text, any links beginning with dollar signs, and any links not ending in .html
+    if not link.get('href') or not link.get_text() or (re.search("^\$", link.get_text())) or (not re.search(".html", link.get('href'))):
+        continue
+    if re.search("top", link.get_text()):
+        break       # Found the end of results - breaking out
+    print '\n' + link.get_text()
+    print "http://" + options.city + ".craigslist.org" + link.get('href')
 print "\n"
 
-""" Burial grounds:
+""" 
 if options.numresults:
         if count > options.numresults: break
     # Break if over the specified result limit
