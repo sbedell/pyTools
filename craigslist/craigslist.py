@@ -5,9 +5,8 @@ from bs4 import BeautifulSoup
 
 """
 TODOS:
-1. implement multi-city searching
-2. implement all city searching
-3. add category selection, for now it's searching through "all for sale"
+1. implement all city searching
+2. add category selection, for now it's searching through "all for sale"
 - implement different output types - terminal, html page, xml, json?, idk?
 - move to an argparse implementation over optparse - Python 3
 
@@ -64,6 +63,11 @@ elif re.search("\d+", options.city):
 else:
     userCiti = str(options.city).strip().lower()
 
+if re.search(',', userCiti):        # Comma separated cities
+    cityList = [city.strip() for city in userCiti.split(',')]
+else:
+    cityList = [userCiti]
+
 # Parse Search Terms and HTML encode them:
 searchTerms = str(options.searchterms)
 if re.search(",", searchTerms):
@@ -71,43 +75,38 @@ if re.search(",", searchTerms):
 if re.search(" ", searchTerms):
     searchTerms = searchTerms.replace(' ', '+')
 
-# Building the URL: 
-url = 'http://' + userCiti + '.craigslist.org/search/sss?zoomToPosting=&catAbb=sss&query=' + searchTerms + '&minAsk='
+for city in cityList:
+    # Building the URL: 
+    url = 'http://' + city + '.craigslist.org/search/sss?zoomToPosting=&catAbb=sss&query=' + searchTerms + '&minAsk='
 
-if options.minprice: url += str(options.minprice)
+    if options.minprice: url += str(options.minprice)
 
-url += '&maxAsk='
+    url += '&maxAsk='
 
-if options.maxprice: url += str(options.maxprice)
+    if options.maxprice: url += str(options.maxprice)
 
-if options.pic:
-	if options.verbose: print "Pictures required."
-	url += '&hasPic=1'
+    if options.pic:
+	    if options.verbose: print "Pictures required."
+	    url += '&hasPic=1'
 
-if options.verbose: print "\nSearching " + url
+    if options.verbose: print "\nSearching " + url
 
-craigsResponse = getResponse(url)	 # Making the Web Call
-soup = BeautifulSoup(craigsResponse) # Creating a Beautifulsoup object
-# print soup.prettify()  			 # Pretty Printing the output HTML
+    craigsResponse = getResponse(url)	 # Making the Web Call
+    soup = BeautifulSoup(craigsResponse) # Creating a Beautifulsoup object
+    # print soup.prettify()  			 # Pretty Printing the output HTML
 
-# Pulling All Links
-# links = [link for link in soup.find_all('a')]
-for link in soup.find_all('a'):
-    #print type(link), link                          # type = bs4.element.Tag
-    #print type(link.get('href')), link.get('href')  # type = unicode
-    #print type(link.get_text()), link.get_text()    # type = unicode
-    # skips blank href, blank link text, any links beginning with dollar signs, and any links not ending in .html
-    if not link.get('href') or not link.get_text() or (re.search("^\$", link.get_text())) or (not re.search(".html", link.get('href'))):
-        continue
-    print '\n' + link.get_text()
-    if re.search("http://", link.get('href')):
-        print link.get('href')
-    else:
-        print "http://" + userCiti + ".craigslist.org" + link.get('href')
-print "\n"
-
-""" 
-if options.numresults:
-        if count > options.numresults: break
-    # Break if over the specified result limit
-"""
+    # Pulling All Links
+    # links = [link for link in soup.find_all('a')]
+    for link in soup.find_all('a'):
+        #print type(link), link                          # type = bs4.element.Tag
+        #print type(link.get('href')), link.get('href')  # type = unicode
+        #print type(link.get_text()), link.get_text()    # type = unicode
+        # skips blank href, blank link text, any links beginning with dollar signs, and any links not ending in .html
+        if not link.get('href') or not link.get_text() or (re.search("^\$", link.get_text())) or (not re.search(".html", link.get('href'))):
+            continue
+        print '\n' + link.get_text()
+        if re.search("http://", link.get('href')):
+            print link.get('href')
+        else:
+            print "http://" + city + ".craigslist.org" + link.get('href')
+    print "\n"
