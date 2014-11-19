@@ -46,7 +46,7 @@ if not options.file and options.sentence == 'This is a test sentence':
 if options.sentence and (options.sentence != 'This is a test sentence' and not options.file):
     print     # blank line print
     for word in str(options.sentence).replace('.', ' ').split():
-        print scrambleWord(word), 
+        print scrambleWord(word),        # Trailing comma to print them all on the same line
     print "\n"
 
 if options.file:

@@ -7,7 +7,7 @@ A fair warning - these are all works in progress, most of these are not fully fu
 
 craigslist
 ------
-A basic Craigslist scraper / search-bot.
+A basic Craigslist scraper / search-bot. <br>
 This is still a work in progress. Basic searching through Ohio is working but that's about it.
 
 dict
