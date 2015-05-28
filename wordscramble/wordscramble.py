@@ -1,12 +1,8 @@
-#!/usr/bin/python
+import random, math
+import argparse
 
-# make words into wdros and shit like taht
-# Usage: python wordscramble.py -h
-
-import optparse, sys, random, math, argparse
-
-""" Returns the scrambled word. """
 def scrambleWord(word):
+    """ Returns the scrambled word. """
     if len(word) < 3:       # cannot be scrambled
         return word
     elif len(word) == 4:    # scramble two middle letters        
@@ -20,40 +16,28 @@ def scrambleWord(word):
         letterList = list(word[1:-1])
         for i in range(len(letterList)):
             rando = int(math.floor(random.random() * len(letterList)))
-            #print rando
             newWord += letterList[rando]
-            #print letterList[rando]
-            #print letterList        
             letterList.remove(letterList[rando])
         newWord += word[-1]     # append the last letter
         return newWord
 
 # *********************************************************
-#Start Main Program:
 
-# Create option parser:
-parser = optparse.OptionParser('python wordscramble.py <options>\n[-f file]\n[-s string]\n[-h help]')
-parser.add_option('-f', dest='file', type='string', help='Specify file to scramble')
-parser.add_option('-s', dest='sentence', type='string', help='Specify a word or sentence to scramble. Note: put quotes around this sentence or else you will get errors.', default='This is a test sentence')
+# Setting up the Argparser:
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', dest='file', type=str, help='Specify file to scramble')
+parser.add_argument('-s', dest='sentence', type=str, help='Specify a word or sentence to scramble. Note: put quotes around this sentence or else you will get errors.')
 
-(options, args) = parser.parse_args()
+args = parser.parse_args()
 
-# No parameters given, print usage and exit
-if not options.file and options.sentence == 'This is a test sentence':
-    print parser.print_usage()
-    sys.exit(1)
-
-if options.sentence and (options.sentence != 'This is a test sentence' and not options.file):
-    print     # blank line print
-    for word in str(options.sentence).replace('.', ' ').split():
-        print scrambleWord(word),        # Trailing comma to print them all on the same line
-    print "\n"
-
-if options.file:
-    print
-    with open(options.file, 'r') as f:
+print()
+if args.sentence:
+    for word in str(args.sentence).replace('.', ' ').split():
+        print(scrambleWord(word), end=" ")       # Trailing comma to print them all on the same line
+elif args.file:
+    with open(args.file, 'r') as f:
         for line in f:
             for word in str(line).replace('.', ' ').strip().split():
-                print scrambleWord(word),
-            print
-    print
+                print(scrambleWord(word) , end=" ")
+else:
+    print(parser.print_usage())

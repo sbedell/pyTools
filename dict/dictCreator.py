@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import urllib2, sys, optparse, re, string
+import argparse
 
 # Gets an HTTP response from a url
 # Return type - string.
@@ -12,10 +13,10 @@ def getResponse(url):
     try:
         response = opener.open(url).read()
     except urllib2.HTTPError as e:
-        print "Error = " + str(e.strerror)
+        print("Error = " + str(e.strerror))
         sys.exit(-1)
     except:
-        print "Unexpected HTTP Error"
+        print("Unexpected HTTP Error")
         sys.exit(-1)
 
     return response
@@ -41,27 +42,27 @@ options, args = parser.parse_args()
 
 # "Main Program"
 if not options.url and not options.inFileName:
-    print parser.print_usage()
+    print(parser.print_usage())S
     sys.exit(-1)
 elif options.url and options.inFileName:
-    print "\nError - can only generate a dictionary from a URL or a file, not both.\nIf you really need to do this, run this program once with the url, " \
-    "and redirect it to a file ('>' on the command line), then re-run this program with your infile and append it to the file you JUST created (using '>>')\n"
+    print("\nError - can only generate a dictionary from a URL or a file, not both.\nIf you really need to do this, run this program once with the url, " \
+    "and redirect it to a file ('>' on the command line), then re-run this program with your infile and append it to the file you JUST created (using '>>')\n")
     sys.exit(-1)
 elif options.url:
     #assert is_valid_url(options.url)
     if not is_valid_url(options.url):
-        print "Invalid URL, exiting..."
+        print("Invalid URL, exiting...")
         sys.exit(-1)
         
     response = getResponse(options.url)
     wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').replace('.', ' ').strip().split()
     for word in set(wordlist):
-        print word
+        print(word)
 elif options.inFileName:
     with open(options.inFileName, 'r') as f:
         for line in f:
             splitLine = line.replace(',', ' ').replace('.', ' ').strip().split()
             for word in set(splitLine):                
-                print word
+                print(word)
 else:
-    print "Unexpected Error"
+    print("Unexpected Error")
