@@ -1,23 +1,22 @@
-#!/usr/bin/python
-
-import urllib2, sys, optparse, re, string
+import re
 import argparse
+import urllib.request
 
 # Gets an HTTP response from a url
 # Return type - string.
 # opener.addheaders spoofs the UserAgent
 def getResponse(url):
-    opener = urllib2.build_opener()
+    opener = urllib.request.build_opener()
     opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0')]
     
     try:
-        response = opener.open(url).read()
-    except urllib2.HTTPError as e:
+        response = opener.open(url).read().decode("utf-8")
+    except urllib.request.HTTPError as e:
         print("Error = " + str(e.strerror))
-        sys.exit(-1)
+        exit(-1)
     except:
         print("Unexpected HTTP Error")
-        sys.exit(-1)
+        exit(-1)
 
     return response
     
@@ -30,39 +29,47 @@ def is_valid_url(url):
         r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
         r'(?::\d+)?'  # optional port
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-    return url is not None and urlRegex.search(url)
+    return urlRegex.search(url)
+    
+def createWordlist(response):
+    """ Creates a wordlist given a urllib response """
+    try:
+        wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').replace('"', '').replace("'", "").replace(',', ' ').replace('.', ' ').strip().split()
+    except UnicodeEncodeError:
+        print("Encoding Error")
+    return set(wordlist)
 
 # Get command line args:
-parser = optparse.OptionParser('python dictcreator.py <options>')
-parser.add_option('-u', metavar='URL', help = 'URL to make dictionary from', dest='url')
-parser.add_option('-r', metavar='infile', help = 'Name of a file to read-in', dest='inFileName')
+parser = argparse.ArgumentParser()
+parser.add_argument('-u', metavar='URL', help = 'URL to make dictionary from', dest='url')
+parser.add_argument('-f', metavar='infile', help = 'Name of a file to read-in', dest='inFileName')
 
-# populate the options
-options, args = parser.parse_args()
+args = parser.parse_args()
 
 # "Main Program"
-if not options.url and not options.inFileName:
-    print(parser.print_usage())S
-    sys.exit(-1)
-elif options.url and options.inFileName:
-    print("\nError - can only generate a dictionary from a URL or a file, not both.\nIf you really need to do this, run this program once with the url, " \
-    "and redirect it to a file ('>' on the command line), then re-run this program with your infile and append it to the file you JUST created (using '>>')\n")
-    sys.exit(-1)
-elif options.url:
-    #assert is_valid_url(options.url)
-    if not is_valid_url(options.url):
+if args.url and args.inFileName:
+    print("Cannot create a dictionary with a url and a file.")
+    print(parser.print_usage())
+elif args.url:
+    if not is_valid_url( args.url):
         print("Invalid URL, exiting...")
-        sys.exit(-1)
-        
-    response = getResponse(options.url)
-    wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').replace('.', ' ').strip().split()
-    for word in set(wordlist):
-        print(word)
-elif options.inFileName:
-    with open(options.inFileName, 'r') as f:
-        for line in f:
-            splitLine = line.replace(',', ' ').replace('.', ' ').strip().split()
-            for word in set(splitLine):                
+        exit(-1)
+    else:
+        response = getResponse( args.url )
+        wordlist = createWordlist ( response )
+        for word in wordlist:
+            try:
                 print(word)
+            except UnicodeEncodeError:
+                print("Unicode Encoding Error")
+elif args.inFileName:
+    with open(args.inFileName) as inputFile:
+        for line in inputFile:
+            splitLine = line.replace('<', ' ').replace('>', ' ').replace('/', '').replace('"', '').replace("'", "").replace(',', ' ').replace('.', ' ').strip().split()
+            for word in set(splitLine):
+                try:
+                    print(word)
+                except UnicodeEncodeError:
+                    print("UnicodeEncodingError")
 else:
-    print("Unexpected Error")
+    print(parser.print_usage())
