@@ -1,4 +1,4 @@
-import re, random
+import random
 import argparse
 
 def generateWordlist(file):

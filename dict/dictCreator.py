@@ -31,13 +31,20 @@ def is_valid_url(url):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return urlRegex.search(url)
     
+# TODO - use regex to match words only, no special char bullshit
 def createWordlist(response):
     """ Creates a wordlist given a urllib response """
     try:
-        wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').replace('"', '').replace("'", "").replace(',', ' ').replace('.', ' ').strip().split()
+        wordlist = response.strip()
+        wordlist = re.split(r'[^a-zA-Z]+', wordlist) #split on non a-Z characters
+        theWordList = set()
+        for word in wordlist:
+            if (re.match(r'\w+', word)):
+                theWordList.add(word) 
     except UnicodeEncodeError:
         print("Encoding Error")
-    return set(wordlist)
+    
+    return theWordList
 
 # Get command line args:
 parser = argparse.ArgumentParser()
@@ -51,12 +58,12 @@ if args.url and args.inFileName:
     print("Cannot create a dictionary with a url and a file.")
     print(parser.print_usage())
 elif args.url:
-    if not is_valid_url( args.url):
+    if not is_valid_url(args.url):
         print("Invalid URL, exiting...")
         exit(-1)
     else:
-        response = getResponse( args.url )
-        wordlist = createWordlist ( response )
+        response = getResponse(args.url)
+        wordlist = createWordlist(response)
         for word in wordlist:
             try:
                 print(word)
