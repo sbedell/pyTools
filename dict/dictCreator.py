@@ -7,7 +7,7 @@ import urllib.request
 # opener.addheaders spoofs the UserAgent
 def getResponse(url):
     opener = urllib.request.build_opener()
-    opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0')]
+    opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/68.0')]
     
     try:
         response = opener.open(url).read().decode("utf-8")
@@ -31,7 +31,7 @@ def is_valid_url(url):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return urlRegex.search(url)
     
-# TODO - use regex to match words only, no special char bullshit
+# TODO - use regex to match words only, no special char bs
 def createWordlist(response):
     """ Creates a wordlist given a urllib response """
     try:
