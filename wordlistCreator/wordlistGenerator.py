@@ -39,9 +39,10 @@ def is_valid_url(url):
     return url is not None and regex.search(url)
 
 # Get command line args:
-parser = optparse.OptionParser('python dictcreator.py <options>')
-parser.add_option('-u', metavar='URL', help = 'URL to make dictionary from', dest='url')
-parser.add_option('-r', metavar='infile', help = 'Name of a file to read-in', dest='inFileName')
+#parser = optparse.OptionParser('python dictcreator.py <options>')
+argParser = argparse.ArgumentParser(description="Generate a wordlist from a website")
+argParser.add_option('-u', metavar='URL', help = 'URL to make dictionary from', dest='url')
+argParser.add_option('-r', metavar='infile', help = 'Name of a file to read-in', dest='inFileName')
 
 # populate the options
 options, args = parser.parse_args()
