@@ -28,7 +28,7 @@ This script takes a wordlist or sentence and outputs it scrambled like the previ
 
 wordlistCreator
 ------
-Generates a word list based on a user-selected website.
+Generates a word list based on a website or text file.
 
 Useful for feeding into the passpharse generator or word scrambler.
 

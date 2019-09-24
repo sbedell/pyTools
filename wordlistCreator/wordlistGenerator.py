@@ -1,31 +1,6 @@
-import sys
-import optparse #deprecated in favor of argparse
-import argparse
 import re
+import argparse
 import urllib.request
-import urllib.parse
-
-# TODO - Get rid of optparse
-# TODO - Convert urllib2 stuff to urllib
-
-# Gets an HTTP response from a url
-# Return type - string.
-# opener.addheaders spoofs the UserAgent
-def getResponse(url):
-    opener = urllib2.build_opener()
-    opener.addheaders = [('User-agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:31.0) Gecko/20100101 Firefox/31.0 ')]
-    
-    try:
-        response = opener.open(url).read()
-    except urllib2.HTTPError as e:
-        print "Error = " + str(e.strerror)
-        sys.exit(-1)
-    except:
-        print "Unexpected HTTP Error"
-        sys.exit(-1)
-    
-    #response = opener.open(url).read()
-    return response
     
 # Taken from Django documentation
 def is_valid_url(url):
@@ -38,36 +13,71 @@ def is_valid_url(url):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return url is not None and regex.search(url)
 
-# Get command line args:
-#parser = optparse.OptionParser('python dictcreator.py <options>')
-argParser = argparse.ArgumentParser(description="Generate a wordlist from a website")
-argParser.add_option('-u', metavar='URL', help = 'URL to make dictionary from', dest='url')
-argParser.add_option('-r', metavar='infile', help = 'Name of a file to read-in', dest='inFileName')
+def getResponse(url):
+    braveUserAgent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
+    firefoxUserAgent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
+    headers = {'User-Agent': firefoxUserAgent}
 
-# populate the options
-options, args = parser.parse_args()
+    if (not is_valid_url(url)):
+        return "\n [!] Invalid URL provided"
+    else:
+        httpRequest = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(httpRequest) as response:
+                pageResponse = response.read().decode('UTF-8')
+                return pageResponse
+        except urllib.error.URLError as e:
+            return e.reason  
 
-# "Main Program"
-if not options.url and not options.inFileName:
-    print parser.print_usage()
-    sys.exit(-1)
-elif options.url and options.inFileName:
-    print "\nError - can only generate a dictionary from a URL or a file, not both.\nIf you really need to do this, " \
-    "run this program once with the url, and redirect it to a file ('>' on the command line), then re-run this program with your infile and append it to the file you JUST created (using '>>')\n"
-    sys.exit(-1)
-elif options.url:
-    # probably need to regex verify a correct URL
-    assert is_valid_url(options.url)
-    response = getResponse(options.url)
-    wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').replace('.', ' ').strip().split()
-    for word in set(wordlist):
-        print word
-elif options.inFileName:
-    with open(options.inFileName, 'r') as f:
+def createWordlistFromUrl(response):
+    """ Creates a wordlist given a urllib response """
+    try:
+        # Strip out useless characters
+        wordlist = response.replace('<', ' ').replace('>', ' ').replace('/', '').replace('.', ' ').strip()
+        wordlist = re.split(r'[^a-zA-Z]+', wordlist) #split on non a-Z characters
+        theWordList = set()
+        for word in wordlist:
+            if (re.match(r'\w+', word)):
+                theWordList.add(word)
+    except UnicodeEncodeError:
+        print("Encoding Error")
+    
+    return theWordList
+
+def createWordlistFromFile(file):
+    with open(args.inFileName, 'r') as f:
+        wordlist = set()
         for line in f:
             splitLine = line.replace(',', ' ').replace('.', ' ').strip().split()
-            for word in set(splitLine):                
-                print word
+            for word in splitLine:                
+                wordlist.add(word)
+        return wordlist
+
+# Get command line args:
+argParser = argparse.ArgumentParser(description="Generate a wordlist from a website or text file")
+argParser.add_argument('-u', metavar='URL', help = 'URL to make dictionary from', dest='url')
+argParser.add_argument('-f', metavar='infile', help = 'Name of a file to read-in', dest='inFileName')
+
+args = argParser.parse_args()
+
+# "Main Program"
+if not args.url and not args.inFileName:
+    print(argParser.print_help())
+elif args.url and args.inFileName:
+    print("\nError - can only generate a dictionary from a URL or a file, not both.\nIf you really need to do this, " \
+    "run this program once with the url, and redirect it to a file ('>' on the command line), " \
+    "then re-run this program with your infile and append it to the file you JUST created (using '>>')\n")
+elif args.url:
+    response = getResponse(args.url)
+    wordlist = createWordlistFromUrl(response)
+    for word in wordlist:
+        print(word)
+elif args.inFileName:
+    wordlist = createWordlistFromFile(args.inFileName)
+    for word in wordlist:
+        try:
+            print(word)
+        except UnicodeEncodeError:
+            print("Encoding Error")
 else:
-    print "Unexpected Error"
-    sys.exit(-1)
+    print("Unexpected Error")
