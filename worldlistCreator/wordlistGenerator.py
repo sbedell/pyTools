@@ -1,7 +1,12 @@
-#!/usr/bin/python
+import sys
+import optparse #deprecated in favor of argparse
+import argparse
+import re
+import urllib.request
+import urllib.parse
 
-import sys, optparse, re, string, urllib2
-from urlparse import urlparse
+# TODO - Get rid of optparse
+# TODO - Convert urllib2 stuff to urllib
 
 # Gets an HTTP response from a url
 # Return type - string.
@@ -22,6 +27,7 @@ def getResponse(url):
     #response = opener.open(url).read()
     return response
     
+# Taken from Django documentation
 def is_valid_url(url):
     regex = re.compile(
         r'^https?://'  # http:// or https://
