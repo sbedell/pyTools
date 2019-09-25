@@ -62,7 +62,7 @@ args = argParser.parse_args()
 
 # "Main Program"
 if not args.url and not args.inFileName:
-    print(argParser.print_help())
+    argParser.print_help()
 elif args.url and args.inFileName:
     print("\nError - can only generate a dictionary from a URL or a file, not both.\nIf you really need to do this, " \
     "run this program once with the url, and redirect it to a file ('>' on the command line), " \
