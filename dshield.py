@@ -34,9 +34,14 @@ def searchPort(portNumber):
 	if (re.match(r'^\d+$', portNumber) and int(portNumber) > 0 and int(portNumber) < 65536):
 		portUrl = apiUrl + "port/" + portNumber + "?text"
 		apiResponse = makeHttpRequest(portUrl)
+		return apiResponse.decode("utf-8")
+		
+		# -- JSON Attempt:
+		# portUrl = apiUrl + "port/" + portNumber + "?json"
+		# jsonResponse = json.load(apiResponse.decode("utf-8"))
+		# print(jsonResponse)
 		# this json dumps only kinda works how I want it to...
 		# return json.dumps(apiResponse.decode("utf-8"), indent=2)
-		return apiResponse.decode("utf-8")
 	else:
 		return "\n[!] Invalid port number"
 
