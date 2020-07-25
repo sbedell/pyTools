@@ -1,7 +1,10 @@
-#!/usr/bin/python
-
-import urllib2, sys, optparse, re
+import re
+import argparse
+import urllib.request
 from bs4 import BeautifulSoup
+
+import optparse # remove this, it's deprecated in favor of argparse
+import urllib2 # remove this too
 
 """
 TODOS:
@@ -11,8 +14,8 @@ TODOS:
 - move to an argparse implementation over optparse - Python 3
 
 Notes: 
-# building the url: http://city.craigslist.org/search/category
-# ex: http://columbus.craigslist.org/search/sss?zoomToPosting=&catAbb=sss&query=testingtesting&minAsk=&maxAsk=&hasPic=1
+# building the url: https://city.craigslist.org/search/category
+# ex: https://columbus.craigslist.org/search/sss?zoomToPosting=&catAbb=sss&query=testingtesting&minAsk=&maxAsk=&hasPic=1
 # categories = sss is all categories
 """
 
@@ -23,8 +26,7 @@ def getResponse(url):
     try:
         response = opener.open(url).read()
     except:
-        print "Unexpected HTTP Error"
-        sys.exit(-1)
+        print("Unexpected HTTP Error")
     return response
 
 # ******************************************************
@@ -47,19 +49,18 @@ parser.add_option('-v', dest='verbose', action='store_true', help='Set verbose o
 # *********************** Main Program ***************************
 if options.verbose:
     # print all excess/non parsed arguments
-	for arg in args: print "Arg = " + arg
+	for arg in args:
+        print("Arg = " + arg)
 
 if not options.searchterms:
-	print "\nError, type in 'python craigslist.py -h' for more help."
-	print parser.print_usage()
-	sys.exit(-1)
+	print("\nError, type in 'python craigslist.py -h' for more help.")
+	print(parser.print_usage())
 
 # Parse City (or cities):
 if options.city == 'all':
-	print "This is not implemented yet."
+	print("This is not implemented yet.")
 elif re.search("\d+", options.city):
-    print "Invalid city - no numbers in cities!"
-    sys.exit(-1)
+    print("Invalid city - no numbers in cities!")
 else:
     userCiti = str(options.city).strip().lower()
 
@@ -77,7 +78,7 @@ if re.search(" ", searchTerms):
 
 for city in cityList:
     # Building the URL: 
-    url = 'http://' + city + '.craigslist.org/search/sss?zoomToPosting=&catAbb=sss&query=' + searchTerms + '&minAsk='
+    url = 'https://' + city + '.craigslist.org/search/sss?zoomToPosting=&catAbb=sss&query=' + searchTerms + '&minAsk='
 
     if options.minprice: url += str(options.minprice)
 
@@ -104,9 +105,9 @@ for city in cityList:
         # skips blank href, blank link text, any links beginning with dollar signs, and any links not ending in .html
         if not link.get('href') or not link.get_text() or (re.search("^\$", link.get_text())) or (not re.search(".html", link.get('href'))):
             continue
-        print '\n' + link.get_text()
-        if re.search("http://", link.get('href')):
-            print link.get('href')
+        print('\n' + link.get_text())
+        if re.search("https://", link.get('href')):
+            print(link.get('href'))
         else:
-            print "http://" + city + ".craigslist.org" + link.get('href')
-    print "\n"
+            print("https://" + city + ".craigslist.org" + link.get('href'))
+    print("\n")
