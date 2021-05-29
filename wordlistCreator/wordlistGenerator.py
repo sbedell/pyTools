@@ -14,8 +14,7 @@ def is_valid_url(url):
     return url is not None and regex.search(url)
 
 def getResponse(url):
-    braveUserAgent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
-    firefoxUserAgent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0'
+    firefoxUserAgent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0'
     headers = {'User-Agent': firefoxUserAgent}
 
     if (not is_valid_url(url)):
