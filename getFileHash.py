@@ -22,7 +22,7 @@ def getFileHash(fileToHash, hashAlgo):
   return filehash
 
 def checkChecksum(filehash, checksum):
-  return "Yes" if (filehash == checksum) else "No"
+  return "Yes" if (filehash.lower() == checksum.lower()) else "No"
 
 # -----------------------------------------------------------------------
 
