@@ -6,15 +6,11 @@ import hashlib, argparse
 # -----------------------------------------------------------------------
 
 def getFileHash(fileToHash, hashAlgo):
-  if (hashAlgo == "sha256"):
-    filehash = hashlib.sha256()
-  elif (hashAlgo == "md5"):
+  filehash = hashlib.sha256()
+  if (hashAlgo == "md5"):
     filehash = hashlib.md5()
   elif (hashAlgo == "sha1"):
-    filehash = hashlib.sha1()
-  else: #default to sha256 or throw error?
-    # raise ValueError("Error: Need to specifiy sha256, sha1, or md5 hash.") 
-    filehash = hashlib.sha256()
+    filehash = hashlib.sha1() 
   
   with open(fileToHash, 'rb') as f:
     fileBuffer = f.read()
