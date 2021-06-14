@@ -1,4 +1,4 @@
-import math, random
+import math, random, argparse
 
 def pickCharsFromString(inputStr, numChars):
   chars = ""
@@ -13,11 +13,11 @@ def shuffleString(inputStr):
   random.shuffle(l)
   return ''.join(l)
 
-#######
+######################
 #  Generate a secure random password.
 # 
 #  @param {Number} length - length of the password to generate.
-#######
+########################
 def generateRandomPassword(length):
   numbers = "0123456789"
   lowercase = "abcdefghijklmnopqrstuvwxyz"
@@ -31,7 +31,15 @@ def generateRandomPassword(length):
   
   return shuffleString(password)
 
-##--------------------------------------------
-# Could do an argparse down here and get user input for password length:
+##-------------------------------------------------------------
+if __name__ == '__main__':
+  parser = argparse.ArgumentParser(description="Generate a random password.")
+  parser.add_argument('-l', dest='passLength', type=int, help="Length of the password to generate", required=True)
+  # parser.add_argument("-v", dest="verbose", action="store_true", help="Enables verbose output (not implemented yet).")
 
-print(generateRandomPassword(15))
+  args = parser.parse_args()
+
+  if (args.passLength):
+    print(generateRandomPassword(args.passLength))
+  else:
+    parser.print_usage()
