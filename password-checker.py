@@ -11,17 +11,13 @@
 
 import hashlib, urllib.request, argparse
 
-## TODO - Add Headers:
-"""
-  headers: {
-    'User-Agent': 'Pwnage-Checker-nodejs',
-    'Add-Padding': true
-  }
-"""
-
+# https://docs.python.org/3/howto/urllib2.html
 def makeHttpRequest(url):
+  myHeaders = { "Add-Padding": "true" }
+  urlRequest = urllib.request.Request(url, data=None, headers=myHeaders)
+
   try:
-    with urllib.request.urlopen(url) as res:
+    with urllib.request.urlopen(urlRequest) as res:
       apiResponse = res.read()
       return apiResponse
   except urllib.error.URLError as e:
@@ -38,7 +34,7 @@ def checkResponse(resp, hashDigest):
       count = int(line[line.index(":") + 1:])
   
   if (count > 0):
-    print("[!] Pwned! This password has appeared this many times:", count)
+    print("[!] Pwned! This password has been seen {} times before.".format(count))
   else:
     print("Congrats, no pwnage found!")
 
