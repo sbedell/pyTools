@@ -35,7 +35,6 @@ def generateRandomPassword(length):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description="Generate a random password.")
   parser.add_argument('-l', dest='passLength', type=int, help="Length of the password to generate", required=True)
-  # parser.add_argument("-v", dest="verbose", action="store_true", help="Enables verbose output (not implemented yet).")
 
   args = parser.parse_args()
 

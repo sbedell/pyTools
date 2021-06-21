@@ -27,6 +27,7 @@ if __name__ == '__main__':
   parser.add_argument('-f', dest='file', help='File to hash', required=True)
   parser.add_argument('--hash', dest='hashType', help="The hashing algoritm to use", default="sha256")
   parser.add_argument("-c", dest="hashChecksum", help="Hash / Checksum to check against the file hash.")
+  parser.add_argument("-v", dest="verbose", action="store_true", help="Enables verbose output (not implemented yet).")
 
   args = parser.parse_args()
 
@@ -35,7 +36,10 @@ if __name__ == '__main__':
       print("Error, please enter a valid hashing algorithm to use.")
     else:
       filehashdigest = getFileHash(args.file, args.hashType).hexdigest()
-      print("\nThe {} of {} is \n{}".format(args.hashType, args.file, filehashdigest))
+      if (args.verbose):
+        print("\nThe {} of {} is \n{}".format(args.hashType, args.file, filehashdigest))
+      else:
+        print(filehashdigest)
 
       if (args.hashChecksum):
         print(args.hashChecksum)
