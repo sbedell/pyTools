@@ -41,4 +41,4 @@ elif ipAddr:
 	geoloc = getResponse(url)
 	print(geoloc.strip())
 else:
-    print(parser.print_usage())
+    parser.print_usage()

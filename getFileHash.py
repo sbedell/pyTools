@@ -43,4 +43,4 @@ if __name__ == '__main__':
 
       if (args.hashChecksum):
         print(args.hashChecksum)
-        print("\nChecksum match? ", checkChecksum(filehashdigest, args.hashChecksum))
+        print(f"\nChecksum match? {checkChecksum(filehashdigest, args.hashChecksum)}")
